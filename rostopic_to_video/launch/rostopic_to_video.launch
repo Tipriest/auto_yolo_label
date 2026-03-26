@@ -1,0 +1,7 @@
+<launch>
+  <arg name="config" default="$(find rostopic_to_video)/config/rostopic_to_video.yaml"/>
+
+  <node pkg="rostopic_to_video" type="rostopic_to_video_node.py" name="rostopic_to_video" output="screen">
+    <rosparam command="load" file="$(arg config)"/>
+  </node>
+</launch>

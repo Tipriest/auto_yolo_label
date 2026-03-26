@@ -1,0 +1,7 @@
+<launch>
+    <arg name="config" default="$(find video_frame_extractor)/config/frame_extract.yaml"/>
+
+    <node pkg="video_frame_extractor" type="video_frame_extractor_node.py" name="video_frame_extractor" output="screen">
+        <param name="config" value="$(arg config)"/>
+    </node>
+</launch>

@@ -1,0 +1,40 @@
+# Topic names (empty string disables a stream, or use "auto" to detect)
+rgb_topic: "/ZED/camera_nav/rgb/image_raw"
+depth_topic: "/ZED/camera_nav/depth/image_raw"
+auto_detect_topics: true
+
+# Camera info topics ("auto" uses <image_topic>/camera_info)
+rgb_info_topic: "/ZED/camera_nav/rgb/camera_info"
+depth_info_topic: ""
+
+# Output settings
+# If output_dir is empty, the ${package root path}/videos will be used.
+output_dir: ""
+output_format: "mp4" # mp4/avi/mkv
+rgb_output_name: "rgb"
+depth_output_name: "depth"
+
+# Video settings
+fps: 30
+codec: "" # FourCC override (e.g., mp4v, XVID). Leave empty for auto.
+infer_fps: true
+
+# Sync settings (used only when both RGB and Depth are enabled)
+sync_queue: 10
+sync_slop: 0.05
+
+# Spatial alignment (Depth -> RGB)
+align_depth_to_rgb: true
+use_tf: true
+tf_timeout: 0.1
+
+# Depth normalization (meters). If depth_max <= depth_min, auto-scale per frame.
+depth_min: 0.0
+depth_max: 5.0
+# Depth unit for uint16 images: "mm" or "m"
+depth_unit: "mm"
+
+# Raw depth saving (lossless)
+depth_raw_output: "" # none/png/npy
+depth_raw_dir: "depth_raw"
+depth_raw_index_width: 6

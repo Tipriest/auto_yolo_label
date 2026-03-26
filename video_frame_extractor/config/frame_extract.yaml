@@ -1,0 +1,14 @@
+input_video: "/home/tipriest/Documents/MasterDegree/auto_yolo_label_ws/src/auto_yolo_label/rostopic_to_video/videos/rgb.mp4"
+output_dir: "frames"
+mode: "fps"
+fps: 2.0
+similarity_method: "mse"
+similarity_threshold: 12.0
+downscale: 0.5
+min_interval_sec: 0.0
+output_format: "jpg"
+prefix: "frame"
+zero_pad: 6
+start_index: 0
+jpg_quality: 95
+png_compression: 3

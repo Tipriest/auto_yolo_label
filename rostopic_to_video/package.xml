@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+    <name>rostopic_to_video</name>
+    <version>0.0.0</version>
+    <description>Record RGB and/or Depth ROS1 image topics to video.</description>
+
+    <maintainer email="tipriest@todo.todo">tipriest</maintainer>
+    <license>TODO</license>
+
+    <buildtool_depend>catkin</buildtool_depend>
+    <depend>rospy</depend>
+    <depend>sensor_msgs</depend>
+    <depend>cv_bridge</depend>
+    <depend>message_filters</depend>
+    <depend>rospkg</depend>
+    <depend>image_geometry</depend>
+    <depend>tf</depend>
+    <depend>tf2_ros</depend>
+
+    <export>
+    </export>
+</package>
