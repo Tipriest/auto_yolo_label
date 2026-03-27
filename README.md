@@ -2,8 +2,8 @@
 ### 0. 环境配置
 需要ROS1环境，中间的某几步需要用conda配置一个新环境
 ```shell
-mkdir -p auto_yolo_label_ws/src cd ./auto_yolo_label_ws
-git clone <your url> ./src
+mkdir -p auto_yolo_label_ws/src && cd ./auto_yolo_label_ws
+git clone git@github.com:Tipriest/auto_yolo_label.git ./src/auto_yolo_label
 catkin build
 ```
 
