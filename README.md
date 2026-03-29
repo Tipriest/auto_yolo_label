@@ -28,7 +28,7 @@ roslaunch rostopic_to_video rostopic_to_video.launch
 
 ```shell
 source devel/setup.bash
-roslaunch rostopic_to_video rostopic_to_video.launch
+roslaunch video_frame_extractor video_frame_extractor.launch
 ```
 
 ### 3. grounding-dino自动标注
@@ -61,6 +61,10 @@ grounding dino开放的有两个权重，还可以在[这个网址](https://gith
 修改配置文件`rostopic_to_video/config/rostopic_to_video.yaml`
 - 改一下类别名
 - 改一下输入输出文件夹
+
+```shell
+python groundingdino_to_yolo.py
+```
 
 大致瞅了一眼，识别效果还行,但是比较小的石头的识别效果就比较差一点了
 <div align="center" style="margin: 20px 0;">
