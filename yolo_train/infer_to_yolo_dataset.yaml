@@ -1,0 +1,30 @@
+# 必填：训练好的 YOLO 模型 .pt 路径
+model: /home/tipriest/Documents/MasterDegree/auto_yolo_label_ws/src/auto_yolo_label/yolo_train/runs/detect/train5_cur_best/weights/best.pt
+
+# 必填：源数据集根目录或 images 目录或单张图片路径
+# - 若为数据集根目录，脚本会在其下查找 images/ 子目录
+# - 若为 images 目录，直接在该目录及其子目录（train/val/test 等）查找
+# - 若为单张图片路径，则只对该图片推理
+source: /data/self_make/masterDegree/outdoor8_gazebo
+
+# 必填：输出数据集根目录（将生成 images/ 与 labels/）
+output: /data/self_make/masterDegree/outdoor8_gazebo_yolo_finetune
+
+# 可选：要处理的 splits 列表；不填则自动发现（如 train/val/test）
+# 示例1：处理 train 与 val
+# splits: [train, val]
+# 示例2：也支持逗号分隔字符串（脚本会自动拆分）
+# splits: "val,test"
+splits:
+
+# 推理相关参数
+imgsz: 640
+conf: 0.25
+iou: 0.4
+device: null      # 例如 "0" 或 "cpu"，null 表示自动
+batch: 16
+max_det: 300
+
+# 标签写入选项
+with_conf: false  # 若为 true，会在标签中额外保存置信度列（非标准 YOLO 标签）
+keep_empty: true # 若为 true，会为无检测的图像也生成空标签文件
