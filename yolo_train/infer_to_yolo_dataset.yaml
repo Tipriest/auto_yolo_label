@@ -1,14 +1,14 @@
 # 必填：训练好的 YOLO 模型 .pt 路径
-model: /home/tipriest/Documents/MasterDegree/auto_yolo_label_ws/src/auto_yolo_label/yolo_train/runs/detect/train5_cur_best/weights/best.pt
+model: /data/self_make/water_world2026-04-04_19-25-25/p05_YOLO/best.pt
 
 # 必填：源数据集根目录或 images 目录或单张图片路径
 # - 若为数据集根目录，脚本会在其下查找 images/ 子目录
 # - 若为 images 目录，直接在该目录及其子目录（train/val/test 等）查找
 # - 若为单张图片路径，则只对该图片推理
-source: /data/self_make/masterDegree/outdoor8_gazebo
+source: /data/self_make/water_world2026-04-04_19-25-25/p04_CVat-Finetune-Dataset/water_world2026-04-04_21-29-49
 
 # 必填：输出数据集根目录（将生成 images/ 与 labels/）
-output: /data/self_make/masterDegree/outdoor8_gazebo_yolo_finetune
+output: /data/self_make/water_world2026-04-04_19-25-25/p06_Yolo-Output-Dataset/water_world2026-04-04_23-08-19
 
 # 可选：要处理的 splits 列表；不填则自动发现（如 train/val/test）
 # 示例1：处理 train 与 val

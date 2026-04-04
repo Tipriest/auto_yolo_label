@@ -3,7 +3,7 @@ from ultralytics import YOLO
 from ultralytics import YOLO, ASSETS
 
 model = YOLO(
-    "runs/detect/train5/weights/best.pt",
+    "runs/detect/train4_0401/weights/best.pt",
     task="detect",
 )
 

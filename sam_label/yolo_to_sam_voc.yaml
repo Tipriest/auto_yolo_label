@@ -1,0 +1,37 @@
+data:
+  # Path to YOLO data.yaml
+  dataset_yaml: /data/self_make/water_world2026-04-04_19-25-25/p04_CVat-Finetune-Dataset/water_world2026-04-04_21-29-49/dataset.yaml
+  # Optional: override labels root (defaults to images/ -> labels/ mapping)
+  labels_root:
+  # Supported image extensions
+  extensions: ["jpg", "jpeg", "png", "bmp"]
+  # Skip if mask already exists
+  skip_existing: true
+
+sam:
+  # Ultralytics SAM weights (sam2 preferred)
+  weights: ./sam2_b.pt
+  device: cuda
+
+output:
+  # Output dataset directory
+  output_dir: /home/tipriest/Documents/MasterDegree/auto_yolo_label_ws/src/auto_yolo_label/video_frame_extractor/frames/legged_water_rgb2_seg_coco_label_result
+  # Output format: voc or coco
+  format: coco
+  # COCO segmentation mode: polygon or rle
+  coco_segmentation: rle
+  # COCO iscrowd value (0 or 1)
+  coco_is_crowd: 1
+  # If true, put images at dataset root and write file_name without images/train prefix
+  coco_flatten_images: false
+  # If true, keep images under images/<split> but write file_name as basename only
+  coco_file_name_only: true
+  # When format=voc, save SegmentationClass masks
+  voc_save_masks: true
+  # Copy or symlink images into JPEGImages
+  copy_images: true
+  use_symlinks: false
+  # Save visualization overlays
+  save_visualizations: true
+  vis_dir: Visualizations
+  vis_alpha: 0.3

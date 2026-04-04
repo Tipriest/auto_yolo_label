@@ -104,31 +104,20 @@ def copy_image(src: Path, dst: Path):
         shutil.copy2(src, dst)
 
 
-def write_data_yaml(output_root: Path, splits: List[str], names: Dict[int, str], yaml_name: str = "data.yaml"):
-    normalized_splits = ['predict' if s == '.' else s for s in splits]
-    entries = []
-    for s in normalized_splits:
-        if (output_root / "images" / s).exists():
-            entries.append((s, f"images/{s}"))
-    # 将 names 整理为 list
-    if isinstance(names, dict):
-        if names and max(names.keys()) + 1 == len(names):
-            names_list = [names[i] for i in range(len(names))]
-        else:
-            # 稀疏或空 dict，转 list 时用索引字符串补齐
-            max_idx = max(names.keys()) if names else -1
-            names_list = [names.get(i, str(i)) for i in range(max_idx + 1)]
-    elif isinstance(names, list):
-        names_list = names
+def copy_dataset_yaml(source_path: Path, output_root: Path, yaml_name: str = "dataset.yaml") -> None:
+    candidates = []
+    if source_path.is_file():
+        candidates.append(source_path.parent / yaml_name)
     else:
-        names_list = [str(i) for i in range(len(names))]
-    yaml_lines = []
-    yaml_lines.append(f"path: {output_root.as_posix()}")
-    for key, val in entries:
-        yaml_lines.append(f"{key}: {val}")
-    yaml_lines.append(f"nc: {len(names_list)}")
-    yaml_lines.append("names: " + str(names_list))
-    (output_root / yaml_name).write_text("\n".join(yaml_lines), encoding="utf-8")
+        candidates.append(source_path / yaml_name)
+        candidates.append(source_path.parent / yaml_name)
+
+    dataset_yaml = next((p for p in candidates if p.exists()), None)
+    if dataset_yaml is None:
+        raise FileNotFoundError(f"未找到 {yaml_name}，请确认 source 目录内存在该文件")
+
+    ensure_dir(output_root)
+    shutil.copy2(dataset_yaml, output_root / yaml_name)
 
 
 def main():
@@ -251,10 +240,10 @@ def main():
                     pass
         names = {i: str(i) for i in range(max_cls + 1)} if max_cls >= 0 else {0: "0"}
 
-    write_data_yaml(output_root, processed_splits, names)
+    copy_dataset_yaml(source_path, output_root)
     print(f"已生成新的 YOLO 数据集：{output_root}")
     print(f"- images/ 与 labels/ 结构就绪")
-    print(f"- data.yaml 已写入（包含 splits 与类别名）")
+    print(f"- dataset.yaml 已从 source 复制")
 
 
 if __name__ == "__main__":

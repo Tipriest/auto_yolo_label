@@ -104,3 +104,30 @@ python train.py
 # 使用infer_video.py进行视频的推理
 python infer_video.py
 ```
+- 为避免之后的yolo发生混淆，需要将训练好的yolo模型的权重文件放到第一步中生成的`p05_YOLO`文件夹中，就是`best.pt`，这样在之后的推理和重新标注的时候就不需要再去修改配置文件了
+
+### 6. yolo重新标注
+使用训练好的yolo模型进行推理，重新生成数据集的标注结果
+```python
+python infer_to_yolo_dataset.py
+```
+修改配置文件`src/auto_yolo_label/yolo_train/infer_to_yolo_dataset.yaml`
+- 改一下权重文件，权重文件的位置建议设置到第一步中生成的`p05_YOLO`文件夹中
+- 改一下输入文件夹，建议的输入文件夹为第二步中生成的`p04_CVat-Finetune-Dataset`文件夹
+- 改一下输出文件夹，建议的输出文件夹为第一步中生成的`p06_Yolo-Output-Dataset`文件夹
+- 标注之后再按照之前的结果导入到CVat中进行补标，导入的文件夹建议设置到第一步中生成的`p07_CVat-Finetune2-Dataset`文件夹中
+
+
+
+### 7. SAM自动标注分割数据集
+使用sam2_b.pt进行标注
+
+```python
+cd ./src/auto_yolo_label/third_party/GroundingDINO
+python sam_infer_to_yolo_dataset.py
+```
+修改配置文件`src/auto_yolo_label/sam_label/yolo_to_sam_voc.yaml`
+- 改一下输入文件夹，建议的输入文件夹为第二步中生成的`p04_CVat-Finetune-Dataset`文件夹
+- 改一下输出文件夹，建议的输出文件夹为第一步中生成的`p08_SAM-Dataset`文件夹中
+- 标注之后
+
