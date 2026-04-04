@@ -1,15 +1,15 @@
 # Topic names (empty string disables a stream, or use "auto" to detect)
-rgb_topic: "/ZED/camera_nav/rgb/image_raw"
-depth_topic: "/ZED/camera_nav/depth/image_raw"
+rgb_topic: "/camera_face/color/image_raw"
+depth_topic: "/camera_face/depth/image_raw"
 auto_detect_topics: true
 
 # Camera info topics ("auto" uses <image_topic>/camera_info)
-rgb_info_topic: "/ZED/camera_nav/rgb/camera_info"
+rgb_info_topic: "/camera_face/color/camera_info"
 depth_info_topic: ""
 
 # Output settings
 # If output_dir is empty, the ${package root path}/videos will be used.
-output_dir: ""
+output_dir: "/data/self_make/water_world2026-04-04_19-25-25/p01_Videos"
 output_format: "mp4" # mp4/avi/mkv
 rgb_output_name: "rgb"
 depth_output_name: "depth"

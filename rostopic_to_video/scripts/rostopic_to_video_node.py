@@ -14,6 +14,7 @@ from cv_bridge import CvBridge
 from image_geometry import PinholeCameraModel
 from message_filters import ApproximateTimeSynchronizer, Subscriber
 from sensor_msgs.msg import CameraInfo, Image
+from datetime import datetime
 
 
 def _choose_fourcc(codec: str, ext: str) -> int:
@@ -152,6 +153,9 @@ class TopicToVideo:
         self.output_format = rospy.get_param("~output_format", "mp4")
         self.rgb_output_name = rospy.get_param("~rgb_output_name", "rgb")
         self.depth_output_name = rospy.get_param("~depth_output_name", "depth")
+        time_suffix = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        self.rgb_output_name += f"_{time_suffix}"
+        self.depth_output_name += f"_{time_suffix}"
         self.fps = float(rospy.get_param("~fps", 30))
         self.codec = rospy.get_param("~codec", "")
         self.infer_fps = bool(rospy.get_param("~infer_fps", True))
