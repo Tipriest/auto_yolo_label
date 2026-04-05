@@ -54,7 +54,7 @@ def resolve_path(base: Optional[str], maybe_path: str) -> str:
     return os.path.normpath(os.path.join(base, maybe_path))
 
 
-def load_yolo_dataset_yaml(path: str) -> Tuple[str, str, Optional[str], List[str]]:
+def load_yolo_dataset_yaml(path: str) -> Tuple[str, Dict[str, Optional[str]], List[str]]:
     with open(path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f) or {}
     if not isinstance(data, dict):
@@ -62,14 +62,18 @@ def load_yolo_dataset_yaml(path: str) -> Tuple[str, str, Optional[str], List[str
     base_path = data.get("path", "")
     train = data.get("train")
     val = data.get("val")
+    test = data.get("test")
     names = data.get("names", [])
     if not train or not names:
         raise ValueError("data.yaml must include train and names")
     if not isinstance(names, list):
         raise ValueError("data.yaml names must be a list")
-    train = resolve_path(base_path, train)
-    val = resolve_path(base_path, val) if val else None
-    return base_path, train, val, [str(n) for n in names]
+    splits = {
+        "train": resolve_path(base_path, train),
+        "val": resolve_path(base_path, val) if val else None,
+        "test": resolve_path(base_path, test) if test else None,
+    }
+    return base_path, splits, [str(n) for n in names]
 
 
 def collect_split_images(source: str, extensions: List[str]) -> List[str]:
@@ -372,20 +376,26 @@ def main() -> None:
     coco_flatten_images = bool(out_cfg.get("coco_flatten_images", False))
     coco_file_name_only = bool(out_cfg.get("coco_file_name_only", False))
 
-    base_path, train_src, val_src, names = load_yolo_dataset_yaml(dataset_yaml)
+    base_path, split_sources, names = load_yolo_dataset_yaml(dataset_yaml)
 
     if labels_root:
         labels_root = resolve_path(base_path, labels_root)
 
-    train_images = collect_split_images(train_src, extensions)
-    if not train_images:
-        raise ValueError(f"No train images found in {train_src}")
-    val_images = collect_split_images(val_src, extensions) if val_src else []
+    split_images: Dict[str, List[str]] = {}
+    for split_name in ["train", "val", "test"]:
+        src = split_sources.get(split_name)
+        if not src:
+            continue
+        images = collect_split_images(src, extensions)
+        if split_name == "train" and not images:
+            raise ValueError(f"No train images found in {src}")
+        if images:
+            split_images[split_name] = images
 
     if output_format == "voc":
         images_dir = os.path.join(output_dir, "JPEGImages")
         ann_dir = os.path.join(output_dir, "Annotations")
-        sets_main_dir = os.path.join(output_dir, "ImageSets", "Main")
+        sets_main_dir = os.path.join(output_dir, "ImageSets")
         sets_seg_dir = os.path.join(output_dir, "ImageSets", "Segmentation")
         masks_dir = os.path.join(output_dir, "SegmentationClass")
     else:
@@ -396,8 +406,7 @@ def main() -> None:
         sets_seg_dir = None
         annotations_dir = os.path.join(output_dir, "annotations")
     vis_dir = os.path.join(output_dir, vis_dir_name)
-    vis_train_dir = os.path.join(vis_dir, "train")
-    vis_val_dir = os.path.join(vis_dir, "val")
+    vis_dirs = {name: os.path.join(vis_dir, name) for name in split_images}
 
     ensure_dir(images_dir)
     if output_format == "voc":
@@ -412,11 +421,11 @@ def main() -> None:
         if coco_flatten_images:
             ensure_dir(output_dir)
         else:
-            ensure_dir(os.path.join(images_dir, "train"))
-            ensure_dir(os.path.join(images_dir, "val"))
+            for split_name in split_images:
+                ensure_dir(os.path.join(images_dir, split_name))
     if save_visualizations:
-        ensure_dir(vis_train_dir)
-        ensure_dir(vis_val_dir)
+        for path in vis_dirs.values():
+            ensure_dir(path)
 
     weights = sam_cfg.get("weights", "sam2_b.pt")
     device = sam_cfg.get("device", "cuda")
@@ -435,7 +444,7 @@ def main() -> None:
 
     def process_split(images: List[str], split_name: str) -> Optional[Dict]:
         split_list = []
-        vis_root = vis_train_dir if split_name == "train" else vis_val_dir
+        vis_root = vis_dirs.get(split_name, vis_dir)
         coco_images: List[Dict] = []
         coco_annotations: List[Dict] = []
         next_ann_id = 1
@@ -543,58 +552,42 @@ def main() -> None:
             "annotations": coco_annotations,
         }
 
-    train_coco = process_split(train_images, "train")
-    val_coco = process_split(val_images, "val") if val_images else None
+    split_results: Dict[str, Optional[Dict]] = {}
+    for split_name, images in split_images.items():
+        split_results[split_name] = process_split(images, split_name)
 
     if output_format == "voc":
         all_names = ["background"] + [str(n) for n in names]
         with open(os.path.join(output_dir, "labelmap.txt"), "w", encoding="utf-8") as f:
             for name in all_names:
                 f.write(f"{name}:::\n")
-        default_list: List[str] = []
-        train_list: List[str] = []
-        val_list: List[str] = []
-        if train_coco:
-            train_list = train_coco.get("split_list", [])
-            default_list.extend(train_list)
-        if val_coco:
-            val_list = val_coco.get("split_list", [])
-            default_list.extend(val_list)
-        default_path = os.path.join(sets_main_dir, "default.txt")
-        with open(default_path, "w", encoding="utf-8") as f:
-            f.write("\n".join(default_list))
+        split_lists: Dict[str, List[str]] = {}
+        for split_name, result in split_results.items():
+            if not result:
+                continue
+            split_list = result.get("split_list", [])
+            split_lists[split_name] = split_list
         if voc_save_masks:
-            train_path = os.path.join(sets_seg_dir, "train.txt")
-            with open(train_path, "w", encoding="utf-8") as f:
-                f.write("\n".join(train_list))
-            if val_list:
-                val_path = os.path.join(sets_seg_dir, "val.txt")
-                with open(val_path, "w", encoding="utf-8") as f:
-                    f.write("\n".join(val_list))
+            for split_name, split_list in split_lists.items():
+                split_path = os.path.join(sets_seg_dir, f"{split_name}.txt")
+                with open(split_path, "w", encoding="utf-8") as f:
+                    f.write("\n".join(split_list))
         print(f"Done. VOC dataset saved to: {output_dir}")
     else:
-        ensure_dir(os.path.join(images_dir, "train"))
-        ensure_dir(os.path.join(images_dir, "val"))
         categories = build_coco_categories(names)
-        coco_train = {
-            "info": {},
-            "licenses": [],
-            "images": train_coco["images"] if train_coco else [],
-            "annotations": train_coco["annotations"] if train_coco else [],
-            "categories": categories,
-        }
-        with open(os.path.join(annotations_dir, "instances_train.json"), "w", encoding="utf-8") as f:
-            json.dump(coco_train, f, ensure_ascii=True, indent=2)
-        if val_coco is not None:
-            coco_val = {
+        for split_name, result in split_results.items():
+            if not result:
+                continue
+            coco_payload = {
                 "info": {},
                 "licenses": [],
-                "images": val_coco["images"],
-                "annotations": val_coco["annotations"],
+                "images": result.get("images", []),
+                "annotations": result.get("annotations", []),
                 "categories": categories,
             }
-            with open(os.path.join(annotations_dir, "instances_val.json"), "w", encoding="utf-8") as f:
-                json.dump(coco_val, f, ensure_ascii=True, indent=2)
+            out_path = os.path.join(annotations_dir, f"instances_{split_name}.json")
+            with open(out_path, "w", encoding="utf-8") as f:
+                json.dump(coco_payload, f, ensure_ascii=True, indent=2)
         print(f"Done. COCO dataset saved to: {output_dir}")
 
 

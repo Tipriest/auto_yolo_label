@@ -1,6 +1,6 @@
 data:
   # Path to YOLO data.yaml
-  dataset_yaml: /data/self_make/water_world2026-04-04_19-25-25/p04_CVat-Finetune-Dataset/water_world2026-04-04_21-29-49/dataset.yaml
+  dataset_yaml: /data/self_make/water_world2026-04-04_19-25-25/p07_CVat-Finetune2-Dataset/water_world2026-04-05_14-51-08/dataset.yaml
   # Optional: override labels root (defaults to images/ -> labels/ mapping)
   labels_root:
   # Supported image extensions
@@ -15,9 +15,9 @@ sam:
 
 output:
   # Output dataset directory
-  output_dir: /home/tipriest/Documents/MasterDegree/auto_yolo_label_ws/src/auto_yolo_label/video_frame_extractor/frames/legged_water_rgb2_seg_coco_label_result
+  output_dir: /data/self_make/water_world2026-04-04_19-25-25/p08_SAM-Dataset/water_world2026-04-05_14-59-07
   # Output format: voc or coco
-  format: coco
+  format: voc
   # COCO segmentation mode: polygon or rle
   coco_segmentation: rle
   # COCO iscrowd value (0 or 1)

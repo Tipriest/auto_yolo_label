@@ -124,11 +124,22 @@ python infer_to_yolo_dataset.py
 使用sam2_b.pt进行标注
 
 ```python
-cd ./src/auto_yolo_label/third_party/GroundingDINO
+cd src/auto_yolo_label/sam_label
 python sam_infer_to_yolo_dataset.py
 ```
 修改配置文件`src/auto_yolo_label/sam_label/yolo_to_sam_voc.yaml`
 - 改一下输入文件夹，建议的输入文件夹为第二步中生成的`p04_CVat-Finetune-Dataset`文件夹
 - 改一下输出文件夹，建议的输出文件夹为第一步中生成的`p08_SAM-Dataset`文件夹中
 - 标注之后
+
+### 8. CVat手工补标分割数据集
+同样的，使用CVat进行手工补标，导入的文件夹建议是`p08_SAM-Dataset`数据集下步骤7.0生成的voc格式的标注结果，进行补标的效果是这样的
+<div align="center" style="margin: 20px 0;">
+    <img src="assets/cvat8.png"
+        alt="A1_complex world"
+        title="A1 Complex Gazebo World Environment"
+        width="800"
+        style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
+        loading="lazy"/>
+</div>
 
