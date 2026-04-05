@@ -94,9 +94,9 @@ conda activate grounding-dino
 pip install ultralytics
 
 cd <your-workspace>/src/auto_yolo_label/yolo_train
-mkdir dataset && cd dataset
-# 将你从CVat上下载好的数据集压缩包解压至dataset文件夹
+
 # 更改train.py中的相关的地方，主要是更改一下用什么模型，使用的数据集的yaml文件的位置
+# yaml文件的位置就是第四步中生成的`dataset.yaml`文件的位置，模型的话可以选择yolo官方的预训练模型，也可以选择自己之前训练好的模型的权重文件的位置
 # 最后的onnx可以导出也可以不导出，如果想要纯用cpu推理的话就导出就行
 
 # 使用python train.py进行训练
