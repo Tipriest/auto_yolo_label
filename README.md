@@ -83,7 +83,8 @@ python groundingdino_to_yolo.py
 像是`Label-studio`我觉得它就不擅长从已经标注好的数据集进行导入，但是它本身支持的后端还好一些，但是后来我就不用这个了，转而是用`CVat`，对导入的支持比较好些。
 关于CVat的安装和使用，具体可以参考这个[教程](./setup_cvat.md)
 - 导出的数据集的路径设置建议，可以设置到第一步中生成的`p04_CVat-Finetune-Dataset`文件夹中
-- 关于导出这里有一个细节需要注意一下，即使导出的时候需要选择`Ultralytics YOLO Detection 1.0`这个格式，CVat导出的数据集的文件夹结构和yolo训练需要的文件夹结构是仍然是有一些差别的，具体的修改的办法是将导出的`val.txt`,`train.txt`, `test.txt`和`data.yaml`删除掉，换上第3步的时候生成的`dataset.yaml就可以了`
+- 关于导出这里有一个细节需要注意一下，即使导出的时候需要选择`Ultralytics YOLO Detection 1.0`这个格式，CVat导出的数据集的文件夹结构和yolo训练需要的文件夹结构是仍然是有一些差别的，具体的修改的办法是将导出的`val.txt`,`train.txt`, `test.txt`和`data.yaml`删除掉，换上第3步的时候生成的`dataset.yaml`
+- 然后需要对这个`dataset.yaml`中的`path`进行修改，改成这个数据集根目录的绝对路径
 
 
 ### 5. yolo训练

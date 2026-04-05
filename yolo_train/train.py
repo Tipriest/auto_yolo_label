@@ -10,8 +10,8 @@ model = YOLO("yolov8s.pt")
 
 # Train the model using the 'coco8.yaml' dataset for 3 epochs
 results = model.train(
-    data="/data/self_make/water_world2026-04-04_19-25-25/p04_CVat-Finetune-Dataset/water_world2026-04-04_21-29-49/dataset.yaml",
-    epochs=1000,
+    data="/data/self_make/water_world2026-04-04_19-25-25/p04_CVat-Finetune-Dataset/water_world2026-04-05_14-25-21/dataset.yaml",
+    epochs=500,
 )
 
 # Evaluate the model's performance on the validation set

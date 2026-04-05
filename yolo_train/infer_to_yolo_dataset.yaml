@@ -8,8 +8,7 @@ model: /data/self_make/water_world2026-04-04_19-25-25/p05_YOLO/best.pt
 source: /data/self_make/water_world2026-04-04_19-25-25/p04_CVat-Finetune-Dataset/water_world2026-04-04_21-29-49
 
 # 必填：输出数据集根目录（将生成 images/ 与 labels/）
-output: /data/self_make/water_world2026-04-04_19-25-25/p06_Yolo-Output-Dataset/water_world2026-04-04_23-08-19
-
+output: /data/self_make/water_world2026-04-04_19-25-25/p06_Yolo-Output-Dataset/water_world2026-04-05_00-37-26
 # 可选：要处理的 splits 列表；不填则自动发现（如 train/val/test）
 # 示例1：处理 train 与 val
 # splits: [train, val]
